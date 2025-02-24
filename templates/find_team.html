@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find a Team - HackFlow</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        /* Add your CSS styles here (or link to an existing stylesheet) */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .team-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex; /* Use flexbox to align image and text */
+            align-items: center; /* Vertically align items in the center */
+        }
+
+        .team-image {
+            width: 100px; /* Adjust the width as needed */
+            height: 100px; /* Adjust the height as needed */
+            border-radius: 8px;
+            margin-right: 15px; /* Add some spacing between the image and text */
+            object-fit: cover; /* Ensure the image fills the container */
+        }
+
+        .team-info {
+            flex-grow: 1; /* Allow the text to take up the remaining space */
+        }
+
+        .team-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .team-description {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .team-slots {
+            font-style: italic;
+            color: #888;
+        }
+
+        .apply-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Find a Team</h1>
+
+        <h2>Available Teams</h2>
+        {% if teams %}
+            {% for team in teams %}
+                <div class="team-card">
+                    <img src="{{ url_for('static', filename='team_placeholder.png') }}" alt="Team Placeholder" class="team-image">
+                    <div class="team-info">
+                        <div class="team-name">{{ team.team_name }}</div>
+                        <div class="team-description">{{ team.description }}</div>
+                        <div class="team-slots">Open Slots: {{ team.open_slots }}</div>
+                        <button class="apply-button">Apply</button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No teams available at the moment.</p>
+        {% endif %}
+
+        <h2>Recruitment Posts</h2>
+        {% if recruitments %}
+            {% for recruitment in recruitments %}
+                <div class="team-card">
+                    <img src="{{ url_for('static', filename='recruitment_placeholder.png') }}" alt="Recruitment Placeholder" class="team-image">
+                    <div class="team-info">
+                        <div class="team-name">{{ recruitment.team_name }}</div>
+                        <div class="team-description">{{ recruitment.description }}</div>
+                        <div class="team-skills">Skills Required: {{ recruitment.skills }}</div>
+                        <div class="team-members-required">Members Required: {{ recruitment.members_required }}</div>
+                        <form method="post" action="{{ url_for('apply_to_team') }}">
+                            <input type="hidden" name="team_id" value="{{ recruitment.id }}">
+                            <button type="submit" class="apply-button">Apply to this Team</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No recruitment posts available at the moment.</p>
+        {% endif %}
+    </div>
+</body>
+</html> 

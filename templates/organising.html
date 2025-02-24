@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathon Organizer Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+   
+    <style>
+        :root {
+            --background-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f5f5f5;
+            --border-color: #dddddd;
+            --primary-color: #2196F3;
+        }
+
+        [data-theme="dark"] {
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --border-color: #404040;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .organizer-profile {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .info-group {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            padding: 8px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .create-event {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .poster-upload {
+            width: 100%;
+            height: 300px;
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .poster-upload img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .poster-upload-text {
+            position: absolute;
+            text-align: center;
+        }
+
+        .event-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .description-area {
+            width: 100%;
+            min-height: 150px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .publish-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .publish-btn:hover {
+            opacity: 0.9;
+        }
+
+        .event-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .event-poster {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .register-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .register-btn:hover {
+            opacity: 0.9;
+        }
+
+        .theme-switch-wrapper {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-label {
+            margin-left: 10px;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            color: white;
+        }
+
+        .edit-btn {
+            background-color: var(--primary-color);
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+        }
+
+        .organizers-section {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .organizer-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-organizer-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .organizers-list {
+            margin-top: 20px;
+        }
+
+        .organizer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .remove-organizer-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .edit-btn:hover, .delete-btn:hover, 
+        .add-organizer-btn:hover, .remove-organizer-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profile-grid, .event-details {
+                grid-template-columns: 1fr;
+            }
+
+            .organizer-input-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="theme-switch-wrapper">
+            <label class="theme-switch">
+                <input type="checkbox" id="theme-toggle">
+                <span class="slider round"></span>
+            </label>
+            <span class="theme-label">Dark Mode</span>
+        </div>
+        <div class="organizer-profile">
+            <h2>Organizer Profile</h2>
+            <div class="profile-grid">
+                <div class="info-group">
+                    <div class="info-label">Username</div>
+                    <input type="text" class="info-value" id="username" placeholder="Enter username" value="{{ user.username }}">
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Email</div>
+                    <input type="email" class="info-value" id="email" placeholder="Enter email" value="{{ user.email }}">
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Mobile Number</div>
+                    <input type="tel" class="info-value" id="mobile" placeholder="Enter mobile number" value="{{ user.mobile }}">
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Organization</div>
+                    <input type="text" class="info-value" id="organization" placeholder="Enter organization name" value="{{ user.organization }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="create-event">
+            <h2>Create New Hackathon Event</h2>
+            <form id="event-form" enctype="multipart/form-data">
+                <input type="hidden" id="event_id" name="event_id">
+                <label class="poster-upload" for="poster-input">
+                    <div class="poster-upload-text">
+                        <h3>Click to Upload Poster</h3>
+                        <p>Maximum size: 5MB</p>
+                    </div>
+                    <img id="poster-preview" style="display: none;">
+                    <input type="file" id="poster-input" name="poster" hidden accept="image/*" onchange="updatePoster(this)">
+                </label>
+
+                <div class="event-details">
+                    <div class="info-group">
+                        <div class="info-label">Event Name</div>
+                        <input type="text" class="info-value" name="event_name" placeholder="Enter event name">
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label">Date</div>
+                        <input type="date" class="info-value" name="event_date">
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label">Time</div>
+                        <input type="time" class="info-value" name="event_time">
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label">Venue</div>
+                        <input type="text" class="info-value" name="venue" placeholder="Enter venue">
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label">Theme</div>
+                        <input type="text" class="info-value" name="theme" placeholder="Enter hackathon theme">
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label">Cash Prize</div>
+                        <input type="number" class="info-value" name="cash_prize" placeholder="Enter prize amount">
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <div class="info-label">Event Description</div>
+                    <textarea class="description-area" name="description" placeholder="Enter detailed description of the event..."></textarea>
+                </div>
+
+                <div class="event-details">
+                    <div class="info-group">
+                        <div class="info-label">Judge 1 Username</div>
+                        <input type="text" class="info-value" name="judge1_username" placeholder="Enter Judge 1 Username">
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label">Judge 2 Username</div>
+                        <input type="text" class="info-value" name="judge2_username" placeholder="Enter Judge 2 Username">
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label">Judge 3 Username</div>
+                        <input type="text" class="info-value" name="judge3_username" placeholder="Enter Judge 3 Username">
+                    </div>
+                </div>
+
+                <button class="publish-btn" type="button" onclick="publishEvent()">Publish Event</button>
+            </form>
+        </div>
+
+        <div class="organizers-section">
+            <h2>Event Organizers</h2>
+            <div class="add-organizer">
+                <div class="info-group">
+                    <div class="info-label">Add Co-organizer</div>
+                    <div class="organizer-input-group">
+                        <input type="email" class="info-value" id="coorganizer-email" placeholder="Enter co-organizer's email">
+                        <button class="add-organizer-btn" onclick="addOrganizer()">Add</button>
+                    </div>
+                </div>
+            </div>
+            <div class="organizers-list">
+                <h3>Current Organizers</h3>
+                <div class="organizer-item">
+                    <span>{{ user.email }} (Main Organizer)</span>
+                </div>
+                <div class="organizer-item">
+                    <span>jane.smith@example.com</span>
+                    <button class="remove-organizer-btn" onclick="removeOrganizer(this)">Remove</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="published-events">
+            <h2>Published Events</h2>
+            {% for event in events %}
+            <div class="event-card" id="event-{{ event.id }}">
+                <div class="event-actions">
+                    <button class="edit-btn" onclick="editEvent('{{ event.id }}')">Edit Event</button>
+                    <button class="delete-btn" onclick="deleteEvent('{{ event.id }}')">Delete</button>
+                </div>
+                <img src="{{ event.poster_url }}" alt="Event Poster" class="event-poster">
+                <h3>{{ event.event_name }}</h3>
+                <p><strong>Date & Time:</strong> {{ event.event_date }}, {{ event.event_time }}</p>
+                <p><strong>Venue:</strong> {{ event.venue }}</p>
+                <p><strong>Theme:</strong> {{ event.theme }}</p>
+                <p><strong>Prize Pool:</strong> ${{ event.cash_prize }}</p>
+                <p><strong>Description:</strong> {{ event.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function updatePoster(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    input.value = ''; // Clear the selected file
+                    document.getElementById('poster-preview').style.display = 'none';
+                    document.querySelector('.poster-upload-text').style.display = 'block';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('poster-preview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    document.querySelector('.poster-upload-text').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function publishEvent() {
+            const form = document.getElementById('event-form');
+            const formData = new FormData(form);
+
+            fetch('/create_event', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    alert('Success: ' + data.message);
+                    // Optionally, refresh the page or update the event list
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while publishing the event.');
+            });
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeLabel = document.querySelector('.theme-label');
+            
+            if (themeToggle.checked) {
+                body.setAttribute('data-theme', 'dark');
+                themeLabel.textContent = 'Dark Mode';
+            } else {
+                body.removeAttribute('data-theme');
+                themeLabel.textContent = 'Light Mode';
+            }
+        }
+
+        document.getElementById('theme-toggle').addEventListener('change', toggleTheme);
+
+        const userPreference = localStorage.getItem('theme');
+        if (userPreference === 'dark') {
+            document.getElementById('theme-toggle').checked = true;
+            document.body.setAttribute('data-theme', 'dark');
+        }
+
+        function editEvent(eventId) {
+            fetch('/organising')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(data => {
+                // Parse the HTML content
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data, 'text/html');
+
+                // Find the event card
+                const eventCard = doc.getElementById(`event-${eventId}`);
+
+                if (!eventCard) {
+                    console.error('Event card not found');
+                    return;
+                }
+
+                // Extract event details
+                const eventName = eventCard.querySelector('h3').textContent;
+                const dateTime = eventCard.querySelector('p:nth-child(2)').textContent.split(': ')[1].split(', ');
+                const eventDate = dateTime[0];
+                const eventTime = dateTime[1];
+                const venue = eventCard.querySelector('p:nth-child(3)').textContent.split(': ')[1];
+                const theme = eventCard.querySelector('p:nth-child(4)').textContent.split(': ')[1];
+                const cashPrize = eventCard.querySelector('p:nth-child(5)').textContent.split(': ')[1].replace('$', '');
+                const description = eventCard.querySelector('p:nth-child(6)').textContent;
+                const posterSrc = eventCard.querySelector('img').src;
+                const judge1Username = eventCard.querySelector('p:nth-child(7)').textContent.split(': ')[1];
+                const judge2Username = eventCard.querySelector('p:nth-child(8)').textContent.split(': ')[1];
+                const judge3Username = eventCard.querySelector('p:nth-child(9)').textContent.split(': ')[1];
+
+                // Populate the form fields
+                document.getElementById('event_id').value = eventId;
+                document.querySelector('input[name="event_name"]').value = eventName;
+                document.querySelector('input[name="event_date"]').value = eventDate;
+                document.querySelector('input[name="event_time"]').value = eventTime;
+                document.querySelector('input[name="venue"]').value = venue;
+                document.querySelector('input[name="theme"]').value = theme;
+                document.querySelector('input[name="cash_prize"]').value = cashPrize;
+                document.querySelector('textarea[name="description"]').value = description;
+                document.querySelector('input[name="judge1_username"]').value = judge1Username;
+                document.querySelector('input[name="judge2_username"]').value = judge2Username;
+                document.querySelector('input[name="judge3_username"]').value = judge3Username;
+
+                // Set the poster preview
+                const posterPreview = document.getElementById('poster-preview');
+                posterPreview.src = posterSrc;
+                posterPreview.style.display = 'block';
+                document.querySelector('.poster-upload-text').style.display = 'none';
+
+                // Scroll to create event form
+                document.querySelector('.create-event').scrollIntoView({ behavior: 'smooth' });
+
+                // Update the publish button to show it's in edit mode
+                const publishBtn = document.querySelector('.publish-btn');
+                publishBtn.textContent = 'Update Event';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function deleteEvent(eventId) {
+            if (confirm('Are you sure you want to delete this event?')) {
+                fetch(`/delete_event/${eventId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                    } else {
+                        alert('Success: ' + data.message);
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the event.');
+                });
+            }
+        }
+
+        function addOrganizer() {
+            const email = document.getElementById('coorganizer-email').value;
+            if (!email) {
+                alert('Please enter an email address');
+                return;
+            }
+            
+            const organizersList = document.querySelector('.organizers-list');
+            const newOrganizer = document.createElement('div');
+            newOrganizer.className = 'organizer-item';
+            newOrganizer.innerHTML = `
+                <span>${email}</span>
+                <button class="remove-organizer-btn" onclick="removeOrganizer(this)">Remove</button>
+            `;
+            organizersList.appendChild(newOrganizer);
+            document.getElementById('coorganizer-email').value = '';
+        }
+
+        function removeOrganizer(button) {
+            if (confirm('Are you sure you want to remove this organizer?')) {
+                button.closest('.organizer-item').remove();
+                // You would typically make an API call here to remove from backend
+            }
+        }
+
+        function updateEvent(eventId) {
+            // Add your event updating logic here
+            alert('Event updated successfully!');
+            // Reset the publish button
+            const publishBtn = document.querySelector('.publish-btn');
+            publishBtn.textContent = 'Publish Event';
+            publishBtn.onclick = publishEvent;
+        }
+    </script>
+</body>
+</html>

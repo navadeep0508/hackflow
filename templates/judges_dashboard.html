@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judges Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background-color: #f4f6f8;
+            --text-color: #2c3e50;
+            --card-bg: #ffffff;
+            --border-color: #e1e8ed;
+            --primary-color: #2196F3;
+            --success-color: #4CAF50;
+            --warning-color: #FFC107;
+            --danger-color: #f44336;
+            --gold: #FFD700;
+            --silver: #C0C0C0;
+            --bronze: #CD7F32;
+            --gradient-primary: linear-gradient(135deg, #2196F3, #1976D2);
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] {
+            --background-color: #1a1f24;
+            --text-color: #e1e8ed;
+            --card-bg: #2c3e50;
+            --border-color: #34495e;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        .dashboard-container {
+            max-width: 1600px;
+            margin: 30px auto;
+            padding: 0 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .section-header h2 {
+            font-size: 1.8em;
+            margin: 0;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .submissions-section,
+        .events-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 30px;
+        }
+
+        .submission-card {
+            background-color: var(--background-color);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .submission-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .submission-title {
+            font-size: 1.3em;
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .submission-meta {
+            font-size: 0.9em;
+            color: var(--text-color);
+        }
+
+        .submission-details {
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            margin-bottom: 10px;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .event-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .event-item {
+            background-color: var(--background-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .event-title {
+            font-size: 1.2em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .team-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .team-item {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .team-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Styles for the score form */
+        .score-form {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background-color: var(--card-bg);
+        }
+
+        .score-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .score-form input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            box-sizing: border-box; /* Ensures padding is included in the width */
+        }
+
+        .score-form button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .score-form button:hover {
+            background-color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Welcome, Judge {{ user.username }}!</h1>
+
+        <section class="events-section">
+            <div class="section-header">
+                <h2>Events</h2>
+            </div>
+            <ul class="event-list">
+                {% for event in events %}
+                    <li class="event-item">
+                        <h3 class="event-title">{{ event.event_name }}</h3>
+                        <p>{{ event.description }}</p>
+                        <h4>Registered Teams:</h4>
+                        <ul class="team-list">
+                            {% for registration in registrations %}
+                                {% if registration.event_id == event.id %}
+                                    <li class="team-item">
+                                        Team Name: {{ registration.team_name }}
+                                        Leader: {{ registration.leader_name }}
+                                        Email: {{ registration.leader_email }}
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section class="submissions-section">
+            <div class="section-header">
+                <h2>Submissions</h2>
+            </div>
+            {% for submission in submissions %}
+                <div class="submission-card">
+                    <h3 class="submission-title">{{ submission.project_title }}</h3>
+                    <p>Event: {{ submission.event_id }}</p>
+                    <p>Description: {{ submission.project_description }}</p>
+                    <p>GitHub Link: <a href="{{ submission.github_link }}">{{ submission.github_link }}</a></p>
+                    <p>Demo Link: <a href="{{ submission.demo_link }}">{{ submission.demo_link }}</a></p>
+                    <p>Tech Stack: {{ submission.tech_stack }}</p>
+
+                    <!-- Score Submission Form -->
+                    <form class="score-form" action="{{ url_for('submit_score') }}" method="post">
+                        <input type="hidden" name="submission_id" value="{{ submission.id }}">
+                        <input type="hidden" name="event_id" value="{{ submission.event_id }}">
+
+                        <label for="innovation_score">Innovation Score:</label>
+                        <input type="number" name="innovation_score" id="innovation_score" min="0" max="10" required>
+
+                        <label for="functionality_score">Functionality Score:</label>
+                        <input type="number" name="functionality_score" id="functionality_score" min="0" max="10" required>
+
+                        <label for="design_score">Design Score:</label>
+                        <input type="number" name="design_score" id="design_score" min="0" max="10" required>
+
+                        <label for="impact_score">Impact Score:</label>
+                        <input type="number" name="impact_score" id="impact_score" min="0" max="10" required>
+
+                        <button type="submit">Submit Score</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </section>
+    </div>
+</body>
+</html> 

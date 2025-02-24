@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Submission</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f5f5f5;
+            --border-color: #dddddd;
+            --primary-color: #2196F3;
+        }
+
+        [data-theme="dark"] {
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --border-color: #404040;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--background-color) 0%, var(--card-bg) 100%);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-color);
+        }
+
+        .submission-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .submission-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .submission-header h1 {
+            font-size: 2.5em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-section {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .form-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .file-upload {
+            border: 2px dashed var(--border-color);
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary-color);
+        }
+
+        .file-upload i {
+            font-size: 2em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, var(--primary-color), #64b5f6);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .theme-switch-wrapper {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1002;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Add the same theme switch styles as in other pages */
+    </style>
+
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider"></span>
+        </label>
+        <span class="theme-label">Dark Mode</span>
+    </div>
+
+    <div class="submission-container">
+        <div class="submission-header">
+            <h1>Project Submission</h1>
+            <p>Submit your hackathon project details</p>
+        </div>
+
+        <form id="submission-form" action="{{ url_for('handle_submission') }}" method="post">
+            <input type="hidden" name="event_id" value="{{ event_id }}">
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="project-title">Project Title*</label>
+                    <input type="text" id="project-title" name="project_title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="project-description">Project Description*</label>
+                    <textarea id="project-description" name="project_description" required 
+                        placeholder="Describe your project, its features, and how it solves the problem"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="github-link">GitHub Repository Link*</label>
+                    <input type="url" id="github-link" name="github_link" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="demo-link">Live Demo Link (if available)</label>
+                    <input type="url" id="demo-link" name="demo_link">
+                </div>
+
+                <div class="form-group">
+                    <label for="tech-stack">Technologies Used*</label>
+                    <input type="text" id="tech-stack" name="tech_stack" required 
+                        placeholder="e.g., React, Node.js, MongoDB">
+                </div>
+
+                <div class="form-group">
+                    <label>Project Screenshots/Demo Video</label>
+                    <label class="file-upload" for="project-files">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload files</p>
+                        <span>Maximum size: 10MB per file</span>
+                    </label>
+                    <input type="file" id="project-files" hidden multiple 
+                        accept="image/*,video/*" onchange="handleFileUpload(this)">
+                    <div id="file-list"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Project</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeLabel = document.querySelector('.theme-label');
+            
+            if (themeToggle.checked) {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeLabel.textContent = 'Dark Mode';
+            } else {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                themeLabel.textContent = 'Light Mode';
+            }
+        }
+
+        // Initialize theme
+        document.getElementById('theme-toggle').addEventListener('change', toggleTheme);
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.getElementById('theme-toggle').checked = true;
+            document.body.setAttribute('data-theme', 'dark');
+            document.querySelector('.theme-label').textContent = 'Dark Mode';
+        }
+
+        function handleFileUpload(input) {
+            const fileList = document.getElementById('file-list');
+            fileList.innerHTML = '';
+            
+            Array.from(input.files).forEach(file => {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File size must be less than 10MB');
+                    return;
+                }
+                
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.textContent = file.name;
+                fileList.appendChild(fileItem);
+            });
+        }
+    </script>
+</body>
+</html>

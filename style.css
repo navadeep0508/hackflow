@@ -1,0 +1,505 @@
+body {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    transition: background-color 0.3s, color 0.3s;
+    color: #000;
+    font-family: 'Inter', sans-serif;
+    font-family: sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
+    padding-top: 50px;
+}
+
+body.dark-mode {
+    background-color: #000;
+    color: #fff;
+}
+
+.card {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 15px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+}
+
+.card.dark-mode {
+    background-color: #000;
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.card-header {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #000;
+    transition: color 0.3s;
+}
+
+.card-header.dark-mode {
+    color: #fff;
+}
+
+.card-body {
+    text-align: center;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-group i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #000;
+    transition: color 0.3s;
+}
+
+.form-group.dark-mode i {
+    color: #fff;
+}
+
+.form-control {
+    border-radius: 25px;
+    margin-bottom: 15px;
+    padding-left: 40px;
+    border: 1px solid #ccc;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    color: #000;
+}
+
+.form-control.dark-mode {
+    background-color: #333;
+    color: #fff;
+    border-color: #fff;
+}
+
+.btn {
+    width: 100%;
+    border-radius: 25px;
+    padding: 10px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-primary {
+    background-color: #000;
+    border: none;
+    color: #fff;
+}
+
+.btn-primary.dark-mode {
+    background-color: #fff;
+    color: #000;
+}
+
+.btn-secondary {
+    background-color: #E0E0E0;
+    border: none;
+    color: #333;
+}
+
+.btn-secondary.dark-mode {
+    background-color: #777;
+    color: #fff;
+}
+
+.btn-google {
+    background-color: #000;
+    color: #fff;
+}
+
+.btn-google.dark-mode {
+    background-color: #fff;
+    color: #000;
+}
+
+.card-footer {
+    text-align: center;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+.card-footer.dark-mode {
+    color: #fff;
+}
+
+.card-footer a {
+    color: #000;
+    transition: color 0.3s;
+}
+
+.card-footer.dark-mode a {
+    color: #fff;
+}
+
+.toggle-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-label {
+    margin-right: 10px;
+    color: #000;
+    transition: color 0.3s;
+}
+
+.toggle-label.dark-mode {
+    color: #fff;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #000;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #000;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background-color: #ccc;
+    margin: 20px 0;
+    transition: background-color 0.3s;
+}
+
+hr.dark-mode {
+    background-color: #555;
+}
+
+/* Navigation Bar Styles */
+nav {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    transition: background-color 0.3s, border-color 0.3s;
+    position: 10px;
+}
+
+nav.dark-mode {
+    background-color: #000;
+    border-color: #555;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.nav-links .auth-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links .auth-links a {
+    margin-right: 20px;
+}
+
+.nav-links a {
+    color: #000;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.nav-links a.dark-mode {
+    color: #fff;
+}
+
+.nav-links a.signup-btn {
+    background-color: #000;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-links a.signup-btn.dark-mode {
+    background-color: #fff;
+    color: #000;
+}
+
+/* Toggle Button Styles */
+.toggle-container {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.toggle-label {
+    margin-right: 10px;
+    color: #000;
+    transition: color 0.3s;
+}
+
+.toggle-label.dark-mode {
+    color: #fff;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #000;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #000;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Container Styles */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    margin: 0 auto;
+}
+
+/* Hero Section Styles */
+.hero {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.hero h1 {
+    font-size: 60px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.hero p {
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1.6;
+    color: #666;
+}
+
+.cta-btn {
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.cta-btn:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Features Section Styles */
+.features {
+    text-align: center;
+    margin-top: 80px;
+}
+
+.features h2 {
+    font-size: 40px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.feature-desc {
+    font-size: 24px;
+    font-weight: 300;
+    margin-bottom: 40px;
+}
+
+.feature-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.feature-card {
+    width: 300px;
+    padding: 20px;
+    margin: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.feature-card.dark-mode {
+    background-color: #000;
+    border-color: #555;
+    color: #fff;
+}
+
+.feature-card i {
+    font-size: 50px;
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.feature-card p {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.6;
+}
+
+/* Footer Styles */
+footer {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    background-color: #f0f0f0;
+    border-top: 1px solid #ccc;
+    transition: background-color 0.3s, border-color 0.3s;
+    margin-top: auto;
+}
+
+footer.dark-mode {
+    background-color: #333;
+    border-color: #555;
+    color: #fff;
+}
+
+/* Dark Mode Styles */
+body.dark-mode nav {
+    background-color: #000;
+    border-color: #555;
+}
+
+body.dark-mode .nav-links a {
+    color: #fff;
+}
+
+body.dark-mode .nav-links a.signup-btn {
+    background-color: #fff;
+    color: #000;
+}
+
+body.dark-mode .hero h1,
+body.dark-mode .hero p {
+    color: #fff;
+}
+
+body.dark-mode .cta-btn {
+    background-color: #fff;
+    color: #000;
+}
+
+body.dark-mode .features h2,
+body.dark-mode .feature-desc {
+    color: #fff;
+}
+
+body.dark-mode .feature-card {
+    background-color: #000;
+    border-color: #555;
+    color: #fff;
+}

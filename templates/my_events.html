@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Events</title>
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f5f5f5;
+            --border-color: #dddddd;
+            --primary-color: #2196F3;
+            --navbar-color: #f0f0f0; /* Light Navbar */
+        }
+
+        [data-theme="dark"] {
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --border-color: #404040;
+            --navbar-color: #1a1a1a; /* Dark Navbar */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .event-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .event-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--background-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .event-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+
+        .event-date,
+        .event-venue {
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+
+        .submit-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+
+        .submit-button:hover {
+            background-color: #1976D2;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: var(--navbar-color); /* Use the theme variable */
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-icon {
+            font-size: 24px;
+            color: var(--text-color); /* Use the theme variable */
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .brand {
+            color: var(--text-color); /* Use the theme variable */
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        /* Theme Switcher Styles */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: var(--card-bg);
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            z-index: 1001;
+        }
+
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 18px;
+            color: var(--text-color);
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .sidebar .close-btn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            padding: 2rem;
+            margin-top: 5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 10px;
+            }
+
+            .event-item {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <i class="fas fa-bars menu-icon" onclick="toggleSidebar()"></i>
+            <h1 class="brand">HackFlow</h1>
+        </div>
+        <div class="theme-switch-wrapper">
+            <label class="theme-switch">
+                <input type="checkbox" id="theme-toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="toggleSidebar()">&times;</a>
+        <a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Home</a>
+        <a href="{{ url_for('profile') }}"><i class="fas fa-user"></i> Profile</a>
+        <a href="{{ url_for('my_events') }}"><i class="fas fa-calendar-check"></i> My Events</a>
+        <a href="{{ url_for('organising') }}"><i class="fas fa-calendar-plus"></i> Organise</a>
+        <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <h1><i class="fas fa-calendar-check"></i> My Registered Events</h1>
+            <a href="{{ url_for('leaderboard') }}" class="submit-button">
+                <i class="fas fa-trophy"></i> View Leaderboard
+            </a>
+            <ul class="event-list">
+                {% if registrations %}
+                    {% for registration in registrations %}
+                        <li class="event-item">
+                            <h2 class="event-title">Event: {{ registration.event_name }}</h2>
+                            <p><strong>Team Name:</strong> {{ registration.team_name }}</p>
+                            <p><strong>Leader Name:</strong> {{ registration.leader_name }}</p>
+                            <p><strong>Leader Email:</strong> {{ registration.leader_email }}</p>
+                            <p><strong>College:</strong> {{ registration.leader_college }}</p>
+                            <p><strong>Course:</strong> {{ registration.leader_course }}</p>
+                            <p><strong>Year:</strong> {{ registration.leader_year }}</p>
+                            <p><strong>Mobile:</strong> {{ registration.leader_mobile }}</p>
+                            <p><strong>Gender:</strong> {{ registration.leader_gender }}</p>
+                            
+                            {% if registration.submission_exists %}
+                                <span class="submission-status">Project Submitted</span>
+                            {% else %}
+                                <a href="{{ url_for('show_submission_form', event_id=registration.event_id) }}" class="submit-button">
+                                    <i class="fas fa-upload"></i> Submit Project
+                                </a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="event-item">
+                        <p>No registered events yet.</p>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            if (sidebar.style.width === "250px") {
+                sidebar.style.width = "0";
+            } else {
+                sidebar.style.width = "250px";
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            
+            if (themeToggle.checked) {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Initialize theme
+        document.getElementById('theme-toggle').addEventListener('change', toggleTheme);
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.getElementById('theme-toggle').checked = true;
+            document.body.setAttribute('data-theme', 'dark');
+        }
+    </script>
+</body>
+</html> 

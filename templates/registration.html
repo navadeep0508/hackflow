@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathon Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f5f5f5;
+            --border-color: #dddddd;
+            --primary-color: #2196F3;
+        }
+
+        [data-theme="dark"] {
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --border-color: #404040;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--background-color) 0%, var(--card-bg) 100%);
+            font-family: 'Arial', sans-serif;
+            color: var(--text-color);
+        }
+
+        .registration-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .registration-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .registration-header h1 {
+            font-size: 2.5em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-section {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .form-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .form-section h2 {
+            color: var(--primary-color);
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+            outline: none;
+        }
+
+        .team-member {
+            background: var(--background-color);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .team-member h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .add-member-btn, .submit-btn {
+            background: linear-gradient(45deg, var(--primary-color), #64b5f6);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px auto;
+        }
+
+        .add-member-btn:hover, .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .remove-member-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .remove-member-btn:hover {
+            background-color: #c82333;
+        }
+
+        /* Responsive design improvements */
+        @media (max-width: 768px) {
+            .registration-container {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            .form-section {
+                padding: 20px;
+            }
+
+            .add-member-btn, .submit-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Add theme switch styles */
+        .theme-switch-wrapper {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1002;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        .theme-label {
+            color: var(--text-color);
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider"></span>
+        </label>
+        <span class="theme-label">Dark Mode</span>
+    </div>
+
+    <div class="registration-container">
+        <div class="registration-header">
+            <h1>Hackathon Registration</h1>
+            <p>Join the innovation journey with your team</p>
+            <p>Event ID: {{ event_id }}</p>
+        </div>
+        
+        <form id="registration-form" action="{{ url_for('submit_registration') }}" method="post">
+            <input type="hidden" name="event_id" value="{{ event_id }}">
+            <input type="hidden" name="memberCount" id="memberCount" value="0">
+            <div class="form-section">
+                <h2>Team Details</h2>
+                <div class="form-group">
+                    <label for="team-name">Team Name*</label>
+                    <input type="text" id="team-name" name="team_name" required>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Team Leader Details</h2>
+                <div class="form-group">
+                    <label for="leader-name">Full Name*</label>
+                    <input type="text" id="leader-name" name="leader_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="leader-email">Email ID*</label>
+                    <input type="email" id="leader-email" name="leader_email" required>
+                </div>
+                <div class="form-group">
+                    <label for="leader-college">College Name*</label>
+                    <input type="text" id="leader-college" name="leader_college" required>
+                </div>
+                <div class="form-group">
+                    <label for="leader-course">Course of Study*</label>
+                    <input type="text" id="leader-course" name="leader_course" required>
+                </div>
+                <div class="form-group">
+                    <label for="leader-year">Course Year*</label>
+                    <select id="leader-year" name="leader_year" required>
+                        <option value="">Select Year</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="leader-mobile">Mobile Number*</label>
+                    <input type="tel" id="leader-mobile" name="leader_mobile" required>
+                </div>
+                <div class="form-group">
+                    <label for="leader-gender">Gender*</label>
+                    <select id="leader-gender" name="leader_gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Team Members</h2>
+                <div id="team-members" class="team-members"></div>
+                <button type="button" class="add-member-btn" onclick="addTeamMember()">
+                    <i class="fas fa-plus"></i> Add Team Member
+                </button>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Registration</button>
+        </form>
+    </div>
+
+    <script>
+        let memberCount = 0;
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeLabel = document.querySelector('.theme-label');
+            
+            if (themeToggle.checked) {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeLabel.textContent = 'Dark Mode';
+            } else {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                themeLabel.textContent = 'Light Mode';
+            }
+        }
+
+        // Initialize theme
+        document.getElementById('theme-toggle').addEventListener('change', toggleTheme);
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.getElementById('theme-toggle').checked = true;
+            document.body.setAttribute('data-theme', 'dark');
+            document.querySelector('.theme-label').textContent = 'Dark Mode';
+        }
+
+        function addTeamMember() {
+            memberCount++;
+            const teamMembers = document.getElementById('team-members');
+            const memberCountInput = document.getElementById('memberCount');
+            memberCountInput.value = memberCount;
+            
+            const memberDiv = document.createElement('div');
+            memberDiv.className = 'team-member';
+            memberDiv.innerHTML = `
+                <h3>Team Member ${memberCount}</h3>
+                <div class="form-group">
+                    <label>Full Name*</label>
+                    <input type="text" name="member_${memberCount}_name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email ID*</label>
+                    <input type="email" name="member_${memberCount}_email" required>
+                </div>
+                <div class="form-group">
+                    <label>College Name*</label>
+                    <input type="text" name="member_${memberCount}_college" required>
+                </div>
+                <div class="form-group">
+                    <label>Course of Study*</label>
+                    <input type="text" name="member_${memberCount}_course" required>
+                </div>
+                <div class="form-group">
+                    <label>Course Year*</label>
+                    <select name="member_${memberCount}_year" required>
+                        <option value="">Select Year</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number*</label>
+                    <input type="tel" name="member_${memberCount}_mobile" required>
+                </div>
+                <div class="form-group">
+                    <label>Gender*</label>
+                    <select name="member_${memberCount}_gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <button type="button" class="remove-member-btn" onclick="removeTeamMember(this)">
+                    Remove Member
+                </button>
+            `;
+            
+            teamMembers.appendChild(memberDiv);
+        }
+
+        function removeTeamMember(button) {
+            const memberDiv = button.parentElement;
+            memberDiv.remove();
+            
+            // Update member numbers
+            const teamMembers = document.getElementById('team-members');
+            Array.from(teamMembers.children).forEach((member, index) => {
+                member.querySelector('h3').textContent = `Team Member ${index + 1}`;
+            });
+            memberCount = teamMembers.children.length;
+        }
+    </script>
+</body>
+</html>

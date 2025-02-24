@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Chat</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        #chat-container {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        #chat-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #messages {
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+        }
+
+        #messages p {
+            margin-bottom: 8px;
+            padding: 8px;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+        }
+
+        #messages p strong {
+            color: #007bff;
+        }
+
+        #input-container {
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #ddd;
+        }
+
+        #message-input {
+            width: 70%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #send-button {
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #user-search {
+            margin: 10px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        #user-list {
+            list-style: none;
+            padding: 0;
+            margin: 10px;
+        }
+
+        #user-list li {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        #user-list li:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-header">
+            <h2>Live Chat</h2>
+        </div>
+
+        <!-- User Search Input -->
+        <input type="text" id="user-search" placeholder="Search users...">
+
+        <!-- User List -->
+        <ul id="user-list">
+            <li data-user-id="public">Public Channel</li>
+            {% for user in users %}
+                <li data-user-id="{{ user.id }}">{{ user.username }}</li>
+            {% endfor %}
+        </ul>
+
+        <div id="messages">
+            <!-- Messages will be displayed here -->
+        </div>
+        <div id="input-container">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            var currentUserId = '{{ session.user_id }}';
+            var selectedRecipientId = 'public'; // Initially select public channel
+
+            function loadMessages(recipientId) {
+                $.ajax({
+                    url: '/get_messages',
+                    type: 'GET',
+                    success: function(data) {
+                        var messagesDiv = $('#messages');
+                        messagesDiv.empty();
+
+                        data.forEach(function(message) {
+                            if (
+                                (message.recipient_id === null && recipientId === 'public') ||
+                                (message.recipient_id === recipientId) ||
+                                (message.user_id === currentUserId && (message.recipient_id === recipientId || (message.recipient_id === null && recipientId === 'public')))
+                            ) {
+                                messagesDiv.append('<p><strong>' + message.username + ':</strong> ' + message.message + '</p>');
+                            }
+                        });
+
+                        messagesDiv.scrollTop(messagesDiv[0].scrollHeight);
+                    }
+                });
+            }
+
+            function filterUsers(searchTerm) {
+                $('#user-list li').each(function() {
+                    var username = $(this).text().toLowerCase();
+                    if (username.includes(searchTerm.toLowerCase())) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            // Load messages initially for the public channel
+            loadMessages(selectedRecipientId);
+
+            // Send message
+            $('#send-button').click(function() {
+                var messageText = $('#message-input').val();
+                if (messageText) {
+                    $.ajax({
+                        url: '/send_message',
+                        type: 'POST',
+                        data: {
+                            message: messageText,
+                            recipient_id: selectedRecipientId
+                        },
+                        success: function(data) {
+                            if (data.status === 'success') {
+                                $('#message-input').val('');
+                                loadMessages(selectedRecipientId);
+                            } else {
+                                alert('Error sending message: ' + data.error);
+                            }
+                        }
+                    });
+                }
+            });
+
+            // User selection
+            $('#user-list').on('click', 'li', function() {
+                selectedRecipientId = $(this).data('user-id');
+                $('#user-list li').removeClass('active');
+                $(this).addClass('active');
+                loadMessages(selectedRecipientId);
+            });
+
+            // Search functionality
+            $('#user-search').on('keyup', function() {
+                var searchTerm = $(this).val();
+                filterUsers(searchTerm);
+            });
+
+            // Periodically refresh messages
+            setInterval(function() {
+                loadMessages(selectedRecipientId);
+            }, 3000);
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathon Leaderboard</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --background-color: #f4f6f8;
+            --text-color: #2c3e50;
+            --card-bg: #ffffff;
+            --border-color: #e1e8ed;
+            --primary-color: #2196F3;
+            --gold: #FFD700;
+            --silver: #C0C0C0;
+            --bronze: #CD7F32;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] {
+            --background-color: #1a1f24;
+            --text-color: #e1e8ed;
+            --card-bg: #2c3e50;
+            --border-color: #34495e;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        .leaderboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .filter-input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .leaderboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .leaderboard-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .team-rank {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            transition: transform 0.2s;
+        }
+
+        .team-rank:hover {
+            transform: translateX(5px);
+            background: rgba(33, 150, 243, 0.1);
+        }
+
+        .rank-number {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-right: 15px;
+            min-width: 30px;
+        }
+
+        .rank-1 .rank-number { color: var(--gold); }
+        .rank-2 .rank-number { color: var(--silver); }
+        .rank-3 .rank-number { color: var(--bronze); }
+
+        .team-info {
+            flex-grow: 1;
+        }
+
+        .team-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .team-score {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .category-label {
+            font-size: 0.9em;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+
+        .personal-stats-container {
+            padding: 20px;
+            background: rgba(33, 150, 243, 0.1);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .personal-stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .personal-stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-title {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .stat-detail {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="leaderboard-container">
+        <div class="header">
+            <h1>Hackathon Leaderboard</h1>
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider"></span>
+                </label>
+                <span class="theme-label">Dark Mode</span>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <input type="text" 
+                   class="filter-input" 
+                   placeholder="Search by team name"
+                   onkeyup="filterTeams(this.value)">
+            <select class="filter-input" onchange="filterByCategory(this.value)">
+                <option value="">All Categories</option>
+                <option value="web">Web Development</option>
+                <option value="ai">AI/ML</option>
+                <option value="mobile">Mobile Apps</option>
+                <option value="blockchain">Blockchain</option>
+            </select>
+        </div>
+
+        <div class="leaderboard-grid">
+            <div class="leaderboard-card">
+                <h2>Overall Rankings</h2>
+                <div id="overall-rankings">
+                    {% for team in teams %}
+                        <div class="team-rank">
+                            <div class="rank-number">#{{ loop.index }}</div>
+                            <div class="team-info">
+                                <div class="team-name">{{ team.team_name }}</div>
+                            </div>
+                            <div class="team-score">{{ team.total_score }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="leaderboard-card">
+                <h2>Your Performance</h2>
+                <div id="personal-stats">
+                    <!-- Personal stats will be added here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-value" id="total-teams">{{ teams|length }}</div>
+                <div class="stat-label">Total Teams</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-participants">0</div>
+                <div class="stat-label">Total Participants</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avg-score">0</div>
+                <div class="stat-label">Average Score</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            
+            if (themeToggle.checked) {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Initialize
+        document.getElementById('theme-toggle').addEventListener('change', toggleTheme);
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.getElementById('theme-toggle').checked = true;
+            document.body.setAttribute('data-theme', 'dark');
+        }
+    </script>
+</body>
+</html>
+
