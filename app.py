@@ -146,7 +146,7 @@ def profile():
                     # Generate a unique filename
                     filename = f"{uuid.uuid4()}_{profile_photo.filename}"
                     # Upload the file to Supabase storage
-                    response = supabase.storage().from_('profile-photos').upload(
+                    response = supabase.storage.from_('profile-photos').upload(
                         path=filename,
                         file=profile_photo.read(),
                         file_options={"content-type": profile_photo.content_type}
